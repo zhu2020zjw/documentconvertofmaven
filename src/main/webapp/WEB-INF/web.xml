@@ -1,25 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">
-  <display-name>documentconvert2</display-name>
-  
-  <servlet>
-  	<servlet-name>upLoadServlet</servlet-name>
-  	<servlet-class>com.zjw.convert.servlet.UpLoadServlet</servlet-class>
-  </servlet>
-  
-  <servlet-mapping>
-  	<servlet-name>upLoadServlet</servlet-name>
-  	<url-pattern>/upLoadServlet</url-pattern>
-  </servlet-mapping>
-  
-  <servlet>
-  	<servlet-name>convertServlet</servlet-name>
-  	<servlet-class>com.zjw.convert.servlet.ConvertServlet</servlet-class>
-  </servlet>
-  
-  <servlet-mapping>
-  	<servlet-name>convertServlet</servlet-name>
-  	<url-pattern>/convertServlet</url-pattern>
-  </servlet-mapping>
-  
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+  <display-name>DocumentConvert</display-name>
+	
+	<servlet>
+		<servlet-name>UpLoadServlet</servlet-name>
+		<servlet-class>com.zjw.convert.controller.UpLoadServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>UpLoadServlet</servlet-name>
+		<url-pattern>/upLoadServlet</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>ConvertServlet</servlet-name>
+		<servlet-class>com.zjw.convert.controller.ConvertServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ConvertServlet</servlet-name>
+		<url-pattern>/convertServlet</url-pattern>
+	</servlet-mapping>
+	
+	<filter>
+		<filter-name>MappingFilter</filter-name>
+		<filter-class>com.zjw.convert.controller.MappingFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>MappingFilter</filter-name>
+		<url-pattern>/convert/*</url-pattern>
+	</filter-mapping>
 </web-app>

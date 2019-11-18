@@ -39,7 +39,7 @@
 		});
 		
 		$(".look").click(function(){
-			location = "http://localhost:8080/documentconvert2/convertServlet?method=previewOfSD";
+			location = "http://localhost:8080/DocumentConvert/convertServlet?method=previewOfSD";
 			sessionStorage.setItem("link",$(".link").val());
 		});
 		
