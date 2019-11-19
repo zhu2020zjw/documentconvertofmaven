@@ -30,13 +30,14 @@
 		});
 		
 		$(".download").click(function(){
-			var lo = sessionStorage.getItem("link");
+			/* var lo = sessionStorage.getItem("link");
 			if(lo == null){
 				location = $(".link").val();
 			}else{
 				location = lo;
-			}
-		});
+			} */
+			location = "http://localhost:8080/DocumentConvert/downLoadServlet?path=" + $(".link").val();
+		}); 
 		
 		$(".look").click(function(){
 			location = "http://localhost:8080/DocumentConvert/convertServlet?method=previewOfSD";
@@ -91,11 +92,11 @@
 			</legend>
 			<a href="convertServlet?method=previewOfSD">标准预览</a>
 			&nbsp;&nbsp;
-			<a href="${requestScope.targetFileName }">${requestScope.targetFileName }</a>
+			<a href="${requestScope.targetFileName }?path=${requestScope.targetFileName }">${requestScope.targetFileName }</a>
 			<br><br>
 			<a href="convertServlet?method=previewOfHD">高清预览</a>
 			&nbsp;&nbsp;
-			<a href="${requestScope.targetFileNameOfHD }">${requestScope.targetFileNameOfHD }</a>
+			<a href="${requestScope.targetFileNameOfHD }?path=${requestScope.targetFileNameOfHD }">${requestScope.targetFileNameOfHD }</a>
 		</fieldset>
 	</div>
 	
@@ -139,7 +140,7 @@
 			<button class="download">下载</button>&nbsp;
 			<button class="look">预览</button>
 			&nbsp;&nbsp;
-			<a href="${requestScope.targetFileName }">${requestScope.targetFileName }</a>
+			<a href="${requestScope.targetFileName }?path=${requestScope.targetFileName }">${requestScope.targetFileName }</a>
 		</fieldset>
 	</div>
 	

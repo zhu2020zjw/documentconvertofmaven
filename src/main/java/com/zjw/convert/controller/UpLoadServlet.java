@@ -14,6 +14,8 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
+import com.zjw.convert.util.PropertiesInitUtil;
+
 //@MultipartConfig
 public class UpLoadServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -64,7 +66,8 @@ public class UpLoadServlet extends HttpServlet {
 
 		// 构造临时路径来存储上传的文件
 		// 这个路径相对当前应用的目录
-		String uploadPath = request.getServletContext().getRealPath("./")  + UPLOAD_DIRECTORY;
+		String uploadPath = PropertiesInitUtil.properties.getProperty("uploadPath")  + UPLOAD_DIRECTORY;
+		System.out.println(uploadPath);
 		
 		// 如果目录不存在则创建
 		File uploadDir = new File(uploadPath);
