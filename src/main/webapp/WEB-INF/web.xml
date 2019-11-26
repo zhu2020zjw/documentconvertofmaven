@@ -9,6 +9,7 @@
     <servlet-name>UpLoadServlet</servlet-name>
     <url-pattern>/upLoadServlet</url-pattern>
   </servlet-mapping>
+  
   <servlet>
     <servlet-name>ConvertServlet</servlet-name>
     <servlet-class>com.zjw.convert.controller.ConvertServlet</servlet-class>
@@ -17,9 +18,8 @@
     <servlet-name>ConvertServlet</servlet-name>
     <url-pattern>/convertServlet</url-pattern>
   </servlet-mapping>
+  
   <servlet>
-    <description></description>
-    <display-name>DownLoadServlet</display-name>
     <servlet-name>DownLoadServlet</servlet-name>
     <servlet-class>com.zjw.convert.controller.DownLoadServlet</servlet-class>
   </servlet>

@@ -2,20 +2,23 @@ package com.zjw.convert.service;
 
 import com.zjw.convert.exception.SuffixException;
 import com.zjw.convert.util.ConvertorPool;
-import com.zjw.convert.util.ConvertorPool.ConvertorObject;
+
+import application.dcs.Convert;
 
 public class DocumentConvert {
 
-	private static ConvertorObject convertorObj;
+	private static ConvertorPool instance;
 	
 	static{
-		convertorObj = ConvertorPool.getInstance().getConvertor();
+		instance = ConvertorPool.getInstance();
 	}
 	
 	//MS转HTML标清预览
 	public String MSToHtml(String sourceFileName,String targetFileName) {
+		Convert convert = instance.getConvert();
 		try {
-			int result = convertorObj.convertor.convertMStoHTML(sourceFileName, targetFileName);
+			//convert.insertTextWaterMark("我是zjw", "宋体", 30, Color.gray, true, true, true);
+			int result = convert.convertMStoHTML(sourceFileName, targetFileName);
 			System.out.println(result);
 			if(result == 0) {
 				return targetFileName;
@@ -23,15 +26,16 @@ public class DocumentConvert {
 		} catch (Exception e) {
 			System.out.println("转换出现异常");
 		} finally {
-			ConvertorPool.getInstance().returnConvertor(convertorObj);
+			instance.returnConvert(convert);
 		}
 		return null;
 	}
 	
 	//MS转HTML高清预览
 	public String MSToHtmlOfHD(String sourceFileName,String targetFileName) {
+		Convert convert = instance.getConvert();
 		try {
-			int result = convertorObj.convertor.convertMStoHtmlOfSvg(targetFileName, sourceFileName);
+			int result = convert.convertMStoHtmlOfSvg(sourceFileName, targetFileName);
 			System.out.println(result);
 			if(result == 0) {
 				return targetFileName;
@@ -39,15 +43,16 @@ public class DocumentConvert {
 		} catch (Exception e) {
 			System.out.println("转换出现异常");
 		} finally {
-			ConvertorPool.getInstance().returnConvertor(convertorObj);
+			instance.returnConvert(convert);
 		}
 		return null;
 	}
 	
 	//MS转PDF
 	public String MSToPDF(String sourceFileName,String targetFileName) {
+		Convert convert = instance.getConvert();
 		try {
-			int result = convertorObj.convertor.convertMStoPDF(sourceFileName, targetFileName);
+			int result = convert.convertMStoPDF(sourceFileName, targetFileName);
 			System.out.println(result);
 			if(result == 0) {
 				return targetFileName;
@@ -55,15 +60,16 @@ public class DocumentConvert {
 		} catch (Exception e) {
 			System.out.println("转换出现异常");
 		} finally {
-			ConvertorPool.getInstance().returnConvertor(convertorObj);
+			instance.returnConvert(convert);
 		}
 		return null;
 	}
 	
 	//PDF转HTML
 	public String pdfToHtml(String sourceFileName,String targetFileName) {
+		Convert convert = instance.getConvert();
 		try {
-			int result = convertorObj.convertor.convertPdfToHtml(sourceFileName, targetFileName);
+			int result = convert.convertPdfToHtml(sourceFileName, targetFileName);
 			System.out.println(result);
 			if(result == 0) {
 				return targetFileName;
@@ -71,18 +77,22 @@ public class DocumentConvert {
 		} catch (Exception e) {
 			System.out.println("转换出现异常");
 		} finally {
-			ConvertorPool.getInstance().returnConvertor(convertorObj);
+			instance.returnConvert(convert);
 		}
 		return null;
 	}
 	
 	//通过上传文件的后缀名，调用相应的方法，进行预览
-	public String convertBySuffix(String suffix,String sourceFileName,String targetFileName) {
+	public String convertBySuffix(String suffix,String sourceFileName,String targetFileName,boolean isHD) {
 		String result = null;
 		switch (suffix) {
 		case "doc":
 		case "docx":
-			result = MSToHtml(sourceFileName, targetFileName);
+			if(isHD) {
+				result = MSToHtmlOfHD(sourceFileName, targetFileName);
+			}else {
+				result = MSToHtml(sourceFileName, targetFileName);
+			}
 			break;
 		case "pdf":
 			result = pdfToHtml(sourceFileName, targetFileName);
@@ -107,5 +117,4 @@ public class DocumentConvert {
 		}
 		return result;
 	}
-	
 }

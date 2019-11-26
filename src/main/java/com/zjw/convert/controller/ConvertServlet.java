@@ -1,5 +1,6 @@
 package com.zjw.convert.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Properties;
@@ -45,7 +46,9 @@ public class ConvertServlet extends HttpServlet {
 
 	//通过反射调用相应的方法
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		path = UpLoadServlet.targetPath;
+		request.setCharacterEncoding("UTF-8");
+		path = UpLoadServlet.targetPath + File.separator + request.getParameter("uploadPath");
+		System.out.println(path);
 		suffix = path.split("\\.")[path.split("\\.").length-1];
 		if(path.equals(null)) {
 			try {
@@ -67,37 +70,69 @@ public class ConvertServlet extends HttpServlet {
 	
 	//标清预览
 	protected void previewOfSD(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String targetFileName = PropertiesInitUtil.properties.getProperty("targetName") + "targetOfSD.html";//用于做转换的目的地址
-		String result = documentConvert.convertBySuffix(suffix, path, targetFileName);
-		targetFileName = "http://" + ip + ":8080/Demo/targetOfSD.html";//用于进行显示的地址
+		String fileName = PropertiesInitUtil.properties.getProperty("targetName") +  "targetOfSD/" + request.getParameter("uploadPath").split("\\.")[0];
+		File file = new File(fileName);
+		if(!file.exists()) {
+			file.mkdir();
+		}
+		
+		String result = documentConvert.convertBySuffix(suffix, path, fileName + "/targetOfSD.html",false);
+		
+		String targetFileName = "http://" + ip + ":8080/Demo/targetOfSD/" + request.getParameter("uploadPath").split("\\.")[0] + File.separator + "targetOfSD.html";//用于进行显示的地址
+		System.out.println(targetFileName+"..");
 		if(result != null) {
 			request.setAttribute("targetFileName",targetFileName);
 			request.getRequestDispatcher("/index.jsp").forward(request, response);
+		}else {
+			request.setAttribute("message", "标清预览出现错误");
+			request.getRequestDispatcher("/error.jsp").forward(request, response);
 		}
-		return;
 	}
 	
 	//高清预览
 	protected void previewOfHD(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String targetFileName = PropertiesInitUtil.properties.getProperty("targetName") + "targetOfHD.html";
-		String result = documentConvert.convertBySuffix(suffix, path, targetFileName);
-		targetFileName = "http://" + ip + ":8080/Demo/targetOfHD.html";
+		String fileName = PropertiesInitUtil.properties.getProperty("targetName") +  "targetOfHD/" + request.getParameter("uploadPath").split("\\.")[0];
+		File file = new File(fileName);
+		if(!file.exists()) {
+			file.mkdir();
+		}
+		String result = documentConvert.convertBySuffix(suffix, path, fileName + "/targetOfHD.html",true);
+		String targetFileName = "http://" + ip + ":8080/Demo/targetOfHD/" + request.getParameter("uploadPath").split("\\.")[0] + File.separator + "targetOfHD.html";
 		if(result != null) {
 			request.setAttribute("targetFileNameOfHD",targetFileName);
 			request.getRequestDispatcher("/index.jsp").forward(request, response);
+		}else {
+			request.setAttribute("message", "高清预览出现错误");
+			request.getRequestDispatcher("/error.jsp").forward(request, response);
 		}
-		return;
 	}
 	
 	protected void convert(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String targetOfSuffix = request.getParameter("suffix");//获得要转换的文件的后缀名
-		String targetFileName = PropertiesInitUtil.properties.getProperty("targetName") + "target." + targetOfSuffix;
+		String name = request.getParameter("uploadPath");
+		String fileName = PropertiesInitUtil.properties.getProperty("targetName");
+		
+		String targetFileName = null;
+		if(targetOfSuffix.equals("html")) {
+			targetFileName = fileName + "targetOfSD\\" + request.getParameter("uploadPath").split("\\.")[0] + "\\targetOfSD" + "\\targetOfSD." + targetOfSuffix;
+			System.out.println(targetFileName+"........***");
+		}else {
+			targetFileName = fileName + request.getParameter("uploadPath").split("\\.")[0] + "\\target." + targetOfSuffix;
+		}
 		try {
 			String result = documentConvert.convertBySuffix(suffix, targetOfSuffix, path, targetFileName);
-			targetFileName = "http://" + ip + ":8080/Demo/target." + targetOfSuffix;
+			if(targetOfSuffix.equals("html")) {
+				targetFileName = "http://" + ip + ":8080/Demo/targetOfSD/" + request.getParameter("uploadPath").split("\\.")[0] + "/targetOfSD." + targetOfSuffix;
+			}else {
+				targetFileName = "http://" + ip + ":8080/Demo/" + request.getParameter("uploadPath").split("\\.")[0] + "/target." + targetOfSuffix;
+			}
 			if(result != null) {
 				request.setAttribute("convertIP",targetFileName);
+				request.getSession().setAttribute("name", name);
 				request.getRequestDispatcher("/index.jsp").forward(request, response);
+			}else {
+				request.setAttribute("message", "转换出现错误");
+				request.getRequestDispatcher("/error.jsp").forward(request, response);
 			}
 		} catch (SuffixException e) {
 			e.printStackTrace();

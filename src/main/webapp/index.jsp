@@ -29,21 +29,6 @@
 			sessionStorage.setItem("mark",1);
 		});
 		
-		$(".download").click(function(){
-			/* var lo = sessionStorage.getItem("link");
-			if(lo == null){
-				location = $(".link").val();
-			}else{
-				location = lo;
-			} */
-			location = "http://localhost:8080/DocumentConvert/downLoadServlet?path=" + $(".link").val();
-		}); 
-		
-		$(".look").click(function(){
-			location = "http://localhost:8080/DocumentConvert/convertServlet?method=previewOfSD";
-			sessionStorage.setItem("link",$(".link").val());
-		});
-		
 		var getMark = sessionStorage.getItem("mark");
 		if(getMark == 1){
 			$(".second_body").css("display","block");
@@ -79,7 +64,7 @@
 				<span>输入文件</span>
 			</legend>
 			<form action="upLoadServlet" method="post" enctype="multipart/form-data">
-				<input type='text' id='textfield' class='txt' size="50" value="${requestScope.path }" />
+				<input type='text' id='textfield' class='txt' size="50" value="${sessionScope.path }" />
 				<input type='button' class='btn' value='浏览...' onclick="document.getElementById('fileField').click()" />
 				<input type="file" name="file" id="fileField" class="file" size="28" onchange="document.getElementById('textfield').value=this.value" />
 				<input type="submit" value="上传本地文件"/> 
@@ -90,13 +75,19 @@
 			<legend>
 				<span>输出文件</span>
 			</legend>
-			<a href="convertServlet?method=previewOfSD">标准预览</a>
+			<form action="convertServlet?method=previewOfSD" method="post">
+				<input type="hidden" name="uploadPath" value="${sessionScope.path }"/>
+				<input type="submit" value="标准预览"/>
+			</form>
 			&nbsp;&nbsp;
-			<a href="${requestScope.targetFileName }?path=${requestScope.targetFileName }">${requestScope.targetFileName }</a>
+			<a href="${requestScope.targetFileName }">${requestScope.targetFileName }</a>
 			<br><br>
-			<a href="convertServlet?method=previewOfHD">高清预览</a>
+			<form action="convertServlet?method=previewOfHD" method="post">
+				<input type="hidden" name="uploadPath" value="${sessionScope.path }"/>
+				<input type="submit" value="高清预览"/>
+			</form>
 			&nbsp;&nbsp;
-			<a href="${requestScope.targetFileNameOfHD }?path=${requestScope.targetFileNameOfHD }">${requestScope.targetFileNameOfHD }</a>
+			<a href="${requestScope.targetFileNameOfHD }">${requestScope.targetFileNameOfHD }</a>
 		</fieldset>
 	</div>
 	
@@ -106,7 +97,7 @@
 				<span>添加结果</span>
 			</legend>
 			<form action="upLoadServlet" method="post" enctype="multipart/form-data">
-				<input type='text' id='textfield2' class='txt' size="50" value="${requestScope.path }" />
+				<input type='text' id='textfield2' class='txt' size="50" value="${sessionScope.path }" />
 				<input type='button' class='btn' value='浏览...' onclick="document.getElementById('fileField2').click()" />
 				<input type="file" name="file" id="fileField2" class="file" size="28" onchange="document.getElementById('textfield2').value=this.value" />
 				<input type="submit" value="上传本地文件"/>
@@ -119,6 +110,7 @@
 			</legend>
 			<div>
 				<form action="convertServlet?method=convert" method="post">
+					<input type="hidden" name="uploadPath" value="${sessionScope.path }"/>
 					<select name="suffix">
 						<option selected="selected" value="-1">请选择支持转换的格式</option>
 						<option value="html">html</option>
@@ -136,11 +128,17 @@
 			<legend>
 				<span>转换结果</span>
 			</legend>
-			<input class="link" type="text" value="${requestScope.convertIP }" size="50"/>
-			<button class="download">下载</button>&nbsp;
-			<button class="look">预览</button>
-			&nbsp;&nbsp;
-			<a href="${requestScope.targetFileName }?path=${requestScope.targetFileName }">${requestScope.targetFileName }</a>
+			<form action="downLoadServlet" method="post">
+				<input type="text" name="link" value="${requestScope.convertIP }" size="50"/>
+				<input type="hidden" name="uploadPath" value="${sessionScope.name }"/>
+				<input type="submit" value="下载"/>	
+			</form>
+			
+			<form action="convertServlet?method=previewOfSD" method="post">
+				<input type="hidden" name="uploadPath" value="${sessionScope.name }"/>
+				<input type="submit" value="预览"/>
+			</form>
+			<a href="${requestScope.targetFileName }">${requestScope.targetFileName }</a>
 		</fieldset>
 	</div>
 	

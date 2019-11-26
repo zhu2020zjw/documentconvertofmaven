@@ -23,9 +23,6 @@ public class UpLoadServlet extends HttpServlet {
 	//文件上传保存文件的地址
 	public static String targetPath = null;
 
-	// 上传文件存储目录
-	private static final String UPLOAD_DIRECTORY = "upload";
-
 	// 上传配置
 	private static final int MEMORY_THRESHOLD = 1024 * 1024 * 8; // 8MB
 	private static final int MAX_FILE_SIZE = 1024 * 1024 * 40; // 40MB
@@ -66,7 +63,7 @@ public class UpLoadServlet extends HttpServlet {
 
 		// 构造临时路径来存储上传的文件
 		// 这个路径相对当前应用的目录
-		String uploadPath = PropertiesInitUtil.properties.getProperty("uploadPath")  + UPLOAD_DIRECTORY;
+		String uploadPath = PropertiesInitUtil.properties.getProperty("uploadPath");
 		System.out.println(uploadPath);
 		
 		// 如果目录不存在则创建
@@ -89,8 +86,8 @@ public class UpLoadServlet extends HttpServlet {
 						File storeFile = new File(filePath);
 						// 保存文件到硬盘
 						item.write(storeFile);
-						targetPath = filePath;
-						request.setAttribute("path", fileName);
+						targetPath = uploadPath;
+						request.getSession().setAttribute("path", fileName);
 					}
 				}
 			}
